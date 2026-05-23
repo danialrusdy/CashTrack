@@ -269,6 +269,24 @@ curl "https://api.telegram.org/bot<TOKEN>/getWebhookInfo"
 > sudo certbot --nginx -d domain-kamu.com
 > ```
 
+### Alternatif lokal tanpa domain
+
+Kalau aplikasi masih jalan di laptop/localhost, gunakan polling. Jalankan web dan bot di dua terminal terpisah.
+
+Terminal 1:
+```bash
+source venv/bin/activate
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Terminal 2:
+```bash
+source venv/bin/activate
+python bot_polling.py
+```
+
+Mode polling akan memanggil `deleteWebhook`, karena Telegram hanya bisa memakai salah satu mode: webhook atau polling.
+
 ---
 
 ## 4. Menjalankan Otomatis saat Reboot (systemd)
