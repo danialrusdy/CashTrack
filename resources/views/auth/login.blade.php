@@ -45,7 +45,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
                     </svg>
                     <input id="email" type="email" name="email"
-                           value="{{ old('email', 'admin@cashtrack.test') }}"
+                           value="{{ old('email') }}"
                            class="form-input pl-10"
                            autocomplete="email"
                            autofocus required>
@@ -89,11 +89,6 @@
         </form>
     </div>
 
-    {{-- Footer hint --}}
-    <p class="text-center text-xs text-slate-400 mt-6">
-        Default: <code class="font-mono bg-white/70 px-1.5 py-0.5 rounded">admin@cashtrack.test</code> /
-        <code class="font-mono bg-white/70 px-1.5 py-0.5 rounded">password</code>
-    </p>
 </div>
 
 </body>

@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ sidebarOpen: false, darkMode: false }" :class="{ 'dark': darkMode }">
+<html lang="id"
+      x-data="{
+          sidebarOpen: false,
+          darkMode: (() => {
+              try {
+                  return localStorage.getItem('cashtrack-theme') === 'dark';
+              } catch (error) {
+                  return false;
+              }
+          })(),
+          isDesktop: window.matchMedia('(min-width: 1024px)').matches,
+          init() {
+              this.$watch('darkMode', value => {
+                  try {
+                      localStorage.setItem('cashtrack-theme', value ? 'dark' : 'light');
+                  } catch (error) {}
+              });
+
+              const media = window.matchMedia('(min-width: 1024px)');
+              const updateViewport = () => {
+                  this.isDesktop = media.matches;
+              };
+
+              if (media.addEventListener) {
+                  media.addEventListener('change', updateViewport);
+              } else {
+                  media.addListener(updateViewport);
+              }
+          }
+      }"
+      :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') — CashTrack</title>
+    <script>
+        try {
+            if (localStorage.getItem('cashtrack-theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        } catch (error) {}
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen">
@@ -23,9 +60,8 @@
 
 {{-- Sidebar --}}
 <aside class="fixed inset-y-0 left-0 z-40 flex flex-col w-64 shadow-sm"
-       style="background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); transition: transform 0.3s ease, background-color 0.3s ease;"
-       :style="sidebarOpen ? 'transform:translateX(0)' : 'transform:translateX(-100%)'"
-       x-init="$el.style.transform = window.innerWidth >= 1024 ? 'translateX(0)' : 'translateX(-100%)'">
+       style="background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); transition: transform 0.3s ease, background-color 0.3s ease; transform: translateX(-100%);"
+       :style="{ transform: (sidebarOpen || isDesktop) ? 'translateX(0)' : 'translateX(-100%)' }">
 
     {{-- Logo --}}
     <div class="flex items-center gap-3 px-5 py-4" style="border-bottom: 1px solid var(--border-color);">
@@ -72,6 +108,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
             <span>Tambah Transaksi</span>
+        </a>
+
+        <a href="{{ route('settings.edit') }}"
+           class="sidebar-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.592c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.431.992a7.723 7.723 0 010 .255c-.007.379.138.751.431.992l1.003.827c.424.35.534.955.26 1.431l-1.296 2.247a1.125 1.125 0 01-1.37.49l-1.217-.456c-.355-.133-.751-.072-1.075.124a6.47 6.47 0 01-.22.127c-.332.184-.582.496-.645.87l-.213 1.281c-.09.542-.56.94-1.11.94h-2.592c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.063-.374-.313-.686-.645-.87a6.52 6.52 0 01-.22-.127c-.324-.196-.72-.257-1.075-.124l-1.217.456a1.125 1.125 0 01-1.37-.49l-1.296-2.247a1.125 1.125 0 01.26-1.431l1.003-.827c.293-.241.438-.613.431-.992a7.81 7.81 0 010-.255c.007-.379-.138-.751-.431-.992l-1.003-.827a1.125 1.125 0 01-.26-1.431l1.296-2.247a1.125 1.125 0 011.37-.49l1.217.456c.355.133.751.072 1.075-.124.073-.044.146-.087.22-.127.332-.184.582-.496.645-.87l.213-1.281z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>Pengaturan</span>
         </a>
     </nav>
 

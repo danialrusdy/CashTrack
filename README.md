@@ -93,13 +93,15 @@ Buka http://localhost:8000
 Setelah deploy ke server dengan HTTPS:
 
 ```bash
-php artisan tinker
+php artisan start:bot
 ```
 
-```php
-$token = config('services.telegram.token');
-$url   = config('services.telegram.webhook_url');
-Http::post("https://api.telegram.org/bot{$token}/setWebhook", ['url' => $url]);
+Command bot:
+
+```bash
+php artisan start:bot   # aktifkan webhook
+php artisan stop:bot    # hapus webhook
+php artisan status:bot  # cek status webhook
 ```
 
 ## Struktur File Utama

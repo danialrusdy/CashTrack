@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ Route::get('/', function () {
 Auth::routes(['register' => false, 'reset' => false]);
 
 Route::middleware('auth')->group(function () {
+    Route::redirect('/home', '/dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/api/dashboard-data', [DashboardController::class, 'getData'])->name('dashboard.data');
 
@@ -22,4 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions',        [TransactionController::class, 'store'])->name('transactions.store');
     Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     Route::get('/transactions/export',  [TransactionController::class, 'export'])->name('transactions.export');
+
+    Route::get('/settings', [AccountController::class, 'edit'])->name('settings.edit');
+    Route::put('/settings', [AccountController::class, 'update'])->name('settings.update');
 });
